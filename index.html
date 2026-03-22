@@ -1,1300 +1,631 @@
--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصور بن نونة للنقل</title>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-  <style>
-    /* ========== المتغيرات والأساسيات ========== */
-    :root {
-      --gold: #C9A84C;
-      --gold-light: #E8C97A;
-      --gold-dark: #9A7A2F;
-      --deep: #0A0E1A;
-      --navy: #0D1B3E;
-      --navy-mid: #132045;
-      --white: #F8F4EC;
-      --text-muted: #8A9BB8;
-      --card-bg: rgba(13, 27, 62, 0.85);
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: var(--deep);
-      color: var(--white);
-      overflow-x: hidden;
-    }
-    /* خلفية النجوم (ثابتة) */
-    .stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      background:
-        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1px 1px at 50% 60%, rgba(255,255,255,0.4), transparent),
-        radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,0.3), transparent),
-        radial-gradient(2px 2px at 35% 20%, rgba(201,168,76,0.4), transparent),
-        radial-gradient(2px 2px at 65% 50%, rgba(201,168,76,0.3), transparent);
-    }
-    /* ========== شريط التنقل ========== */
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-      background: rgba(10,14,26,0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(201,168,76,0.2);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .nav-logo-icon {
-      width: 45px;
-      height: 45px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 0 20px rgba(201,168,76,0.4);
-    }
-    .nav-logo-text {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--gold);
-    }
-    .nav-logo-sub {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-    }
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-    .nav-links a {
-      text-decoration: none;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: color 0.3s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--gold);
-      transform: scaleX(0);
-      transition: transform 0.3s;
-    }
-    .nav-links a:hover {
-      color: var(--gold);
-    }
-    .nav-links a:hover::after {
-      transform: scaleX(1);
-    }
-    .nav-cta {
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--deep) !important;
-      padding: 8px 20px;
-      border-radius: 25px;
-      font-weight: 700 !important;
-      font-size: 0.85rem !important;
-    }
-    .nav-cta:hover {
-      color: var(--deep) !important;
-    }
-    /* ========== القسم الرئيسي (hero) ========== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      padding-top: 70px;
-    }
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(13,27,62,0.9), transparent),
-        linear-gradient(180deg, #0A0E1A 0%, #0D1B3E 40%, #0A0E1A 100%);
-    }
-    .hero-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      animation: float 8s ease-in-out infinite;
-    }
-    .hero-orb-1 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(201,168,76,0.15), transparent 70%);
-      top: 10%;
-      left: -10%;
-      animation-delay: 0s;
-    }
-    .hero-orb-2 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(13,27,62,0.8), transparent 70%);
-      bottom: 10%;
-      right: -10%;
-      animation-delay: 3s;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-30px) scale(1.05); }
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 2rem;
-      max-width: 900px;
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.4);
-      color: var(--gold);
-      padding: 6px 20px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-    }
-    .hero-title {
-      font-family: 'Amiri', serif;
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-    }
-    .hero-title span {
-      color: var(--gold);
-    }
-    .hero-subtitle {
-      font-size: clamp(1rem, 2vw, 1.4rem);
-      color: var(--text-muted);
-      margin-bottom: 2.5rem;
-      font-weight: 300;
-    }
-    .hero-btns {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--deep);
-      padding: 14px 36px;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 30px rgba(201,168,76,0.35);
-      display: inline-block;
-    }
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 40px rgba(201,168,76,0.5);
-    }
-    .btn-outline {
-      background: transparent;
-      color: var(--gold);
-      padding: 14px 36px;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: 2px solid var(--gold);
-      cursor: pointer;
-      transition: all 0.3s;
-      display: inline-block;
-    }
-    .btn-outline:hover {
-      background: rgba(201,168,76,0.1);
-      transform: translateY(-3px);
-    }
-    .hero-stats {
-      display: flex;
-      gap: 3rem;
-      justify-content: center;
-      margin-top: 4rem;
-      flex-wrap: wrap;
-    }
-    .stat {
-      text-align: center;
-    }
-    .stat-num {
-      font-family: 'Amiri', serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--gold);
-      display: block;
-    }
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-    /* ========== قسم البحث ========== */
-    .search-section {
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-      position: relative;
-      z-index: 10;
-    }
-    .search-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 20px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 900px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    }
-    .search-tabs {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .tab {
-      padding: 8px 20px;
-      border-radius: 25px;
-      border: 1px solid rgba(201,168,76,0.3);
-      background: transparent;
-      color: var(--text-muted);
-      font-family: 'Cairo', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .tab.active, .tab:hover {
-      background: var(--gold);
-      color: var(--deep);
-      border-color: var(--gold);
-      font-weight: 700;
-    }
-    .search-content {
-      min-height: 200px;
-    }
-    .search-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-    }
-    .search-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .search-field label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-    .search-field input, .search-field select {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 10px;
-      padding: 10px 14px;
-      color: var(--white);
-      font-family: 'Cairo', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .search-field input:focus, .search-field select:focus {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.05);
-    }
-    .search-field select option {
-      background: var(--navy);
-    }
-    .btn-search {
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--deep);
-      border: none;
-      border-radius: 10px;
-      padding: 12px 30px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      align-self: flex-end;
-      width: 100%;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-search:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(201,168,76,0.4);
-    }
-    /* ========== العناوين العامة ========== */
-    section {
-      position: relative;
-      z-index: 2;
-    }
-    .section-header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .section-label {
-      display: inline-block;
-      color: var(--gold);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 0.8rem;
-    }
-    .section-title {
-      font-family: 'Amiri', serif;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      margin-bottom: 0.8rem;
-    }
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 1rem;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    .divider {
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-dark));
-      margin: 0 auto 1.5rem;
-      border-radius: 2px;
-    }
-    /* ========== قسم النقل ========== */
-    #transport {
-      padding: 5rem 2rem;
-    }
-    .transport-intro {
-      max-width: 1100px;
-      margin: 0 auto 3rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: center;
-    }
-    .transport-text h3 {
-      font-family: 'Amiri', serif;
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-    .transport-text p {
-      color: var(--text-muted);
-      line-height: 1.8;
-      font-size: 0.95rem;
-    }
-    .transport-highlights {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      margin-top: 1.5rem;
-    }
-    .transport-highlight {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-    .transport-visual {
-      background: var(--card-bg);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 20px;
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .transport-visual::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(201,168,76,0.08), transparent 70%);
-    }
-    .transport-big-icon {
-      font-size: 5rem;
-      display: block;
-      margin-bottom: 1rem;
-    }
-    .transport-visual h4 {
-      font-family: 'Amiri', serif;
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-    }
-    .transport-visual p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-    .routes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.2rem;
-      max-width: 1100px;
-      margin: 0 auto 2.5rem;
-    }
-    .route-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(201,168,76,0.15);
-      border-radius: 14px;
-      padding: 1.4rem;
-      transition: all 0.3s;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .route-card:hover {
-      border-color: rgba(201,168,76,0.5);
-      transform: translateX(-5px);
-      background: rgba(201,168,76,0.06);
-    }
-    .route-icon {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: rgba(201,168,76,0.12);
-      border: 2px solid rgba(201,168,76,0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      flex-shrink: 0;
-      transition: all 0.3s;
-    }
-    .route-card:hover .route-icon {
-      background: rgba(201,168,76,0.25);
-      border-color: var(--gold);
-    }
-    .route-info {
-      flex: 1;
-    }
-    .route-from-to {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .route-arrow {
-      color: var(--gold);
-    }
-    .route-type {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-    .route-badge {
-      background: rgba(201,168,76,0.15);
-      color: var(--gold);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      border: 1px solid rgba(201,168,76,0.3);
-      white-space: nowrap;
-    }
-    .transport-cta {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(13,27,62,0.8));
-      border: 1px solid rgba(201,168,76,0.3);
-      border-radius: 20px;
-      padding: 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .transport-cta-text h3 {
-      font-family: 'Amiri', serif;
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
-    }
-    .transport-cta-text p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-    .transport-cta-btns {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    /* ========== الخريطة وبيانات الاتصال ========== */
-    #map-section {
-      padding: 5rem 2rem;
-    }
-    .map-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-    .map-wrapper {
-      border-radius: 20px;
-      overflow: hidden;
-      border: 2px solid rgba(201,168,76,0.3);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      position: relative;
-    }
-    .map-wrapper iframe {
-      width: 100%;
-      height: 400px;
-      display: block;
-      border: none;
-    }
-    .map-overlay-badge {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background: rgba(10,14,26,0.9);
-      border: 1px solid rgba(201,168,76,0.4);
-      border-radius: 10px;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: var(--gold);
-    }
-    .contact-info-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 20px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(201,168,76,0.1);
-      transition: all 0.3s;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .contact-item:hover {
-      background: rgba(201,168,76,0.08);
-      border-color: rgba(201,168,76,0.35);
-      transform: translateX(-5px);
-    }
-    .contact-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background: rgba(201,168,76,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-    }
-    .contact-detail-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-    .contact-detail-value {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--white);
-    }
-    /* ========== آراء العملاء ========== */
-    #testimonials {
-      padding: 5rem 2rem;
-    }
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .testimonial-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(201,168,76,0.15);
-      border-radius: 16px;
-      padding: 1.8rem;
-      transition: all 0.3s;
-    }
-    .testimonial-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(201,168,76,0.35);
-    }
-    .testi-quote {
-      font-size: 2rem;
-      color: var(--gold);
-      line-height: 1;
-      margin-bottom: 1rem;
-    }
-    .testi-text {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-bottom: 1.2rem;
-    }
-    .testi-stars {
-      color: #FFD700;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-    .testi-author {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .testi-avatar {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: rgba(201,168,76,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      border: 2px solid rgba(201,168,76,0.3);
-    }
-    .testi-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-    .testi-loc {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-    /* ========== نموذج الاتصال ========== */
-    #contact {
-      padding: 5rem 2rem;
-      background: rgba(13,27,62,0.3);
-    }
-    .contact-wrapper {
-      max-width: 700px;
-      margin: 0 auto;
-      background: var(--card-bg);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 24px;
-      padding: 3rem;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-    .form-group label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .form-group input, .form-group textarea, .form-group select {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 12px;
-      padding: 12px 16px;
-      color: var(--white);
-      font-family: 'Cairo', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .form-group textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.05);
-    }
-    .form-group select option {
-      background: var(--navy);
-    }
-    .btn-submit {
-      width: 100%;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--deep);
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 1rem;
-    }
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(201,168,76,0.4);
-    }
-    /* ========== التذييل ========== */
-    footer {
-      background: rgba(5,8,18,0.95);
-      border-top: 1px solid rgba(201,168,76,0.2);
-      padding: 3rem 2rem 1.5rem;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      max-width: 1100px;
-      margin: 0 auto 2rem;
-    }
-    .footer-brand .nav-logo-text {
-      font-size: 1.3rem;
-    }
-    .footer-brand p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-top: 1rem;
-    }
-    .footer-title {
-      color: var(--gold);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
-    .footer-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: color 0.3s;
-    }
-    .footer-links a:hover {
-      color: var(--gold);
-    }
-    .footer-bottom {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(201,168,76,0.1);
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-    .footer-bottom span {
-      color: var(--gold);
-    }
-    /* ========== زر الواتساب العائم ========== */
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 2rem;
-      left: 2rem;
-      z-index: 999;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: #25D366;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      text-decoration: none;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.5);
-      animation: pulse 2s infinite;
-      transition: transform 0.3s;
-    }
-    .whatsapp-btn:hover {
-      transform: scale(1.1);
-    }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.5); }
-      50% { box-shadow: 0 4px 40px rgba(37,211,102,0.8); }
-    }
-    /* ========== تأثير الظهور عند التمرير ========== */
-    .animate-on-scroll {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .animate-on-scroll.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    /* ========== استجابة للجوال ========== */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-      .map-container {
-        grid-template-columns: 1fr;
-      }
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      .hero-stats {
-        gap: 1.5rem;
-      }
-      .transport-intro {
-        grid-template-columns: 1fr;
-      }
-      .transport-cta {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بلدية حجاج - ولاية مستغانم</title>
+<meta name="theme-color" content="#1a6b7a">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--td:#0b3d4c;--tm:#1a6b7a;--tl:#2a8fa0;--tk:#4db8cc;--gd:#c9941a;--gl:#e8b84a;--gp:#fdf3dc;--cr:#f4f1eb;--wh:#fff;--sh:rgba(11,61,76,.15);--rd:#c0392b;--gn:#27ae60;--or:#e67e22;}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--cr);color:var(--td);direction:rtl;text-align:right;line-height:1.6}
+.alert{background:linear-gradient(135deg,var(--rd),#a93226);color:#fff;padding:10px 20px;text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;animation:ap 2s infinite}
+.alert.hide{display:none}
+.alert button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer}
+@keyframes ap{0%,100%{opacity:1}50%{opacity:.85}}
+.tkr{background:var(--td);color:#fff;display:flex;align-items:center;overflow:hidden;height:36px}
+.tkr-lbl{background:var(--gd);color:var(--td);padding:0 14px;font-weight:700;font-size:13px;height:100%;display:flex;align-items:center;white-space:nowrap}
+.tkr-wrap{flex:1;overflow:hidden}
+.tkr-track{display:flex;animation:tk 35s linear infinite}
+.tkr-inner{display:flex;gap:30px;padding:0 20px;white-space:nowrap;align-items:center;height:36px}
+@keyframes tk{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.abar{background:var(--td);color:#fff;padding:7px 20px;display:none;align-items:center;justify-content:space-between;font-size:12px;position:fixed;top:0;left:0;right:0;z-index:9999;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.abar.on{display:flex}
+.abtn{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 12px;border-radius:7px;cursor:pointer;margin-right:5px;font-family:'Cairo',sans-serif;font-size:12px}
+.abtn:hover{background:rgba(255,255,255,.28)}
+.abtn.out{background:var(--rd)}
+header{background:var(--wh);box-shadow:0 2px 16px var(--sh);position:sticky;top:0;z-index:95}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;gap:16px}
+.hlogo{display:flex;align-items:center;gap:12px}
+.hicon{width:54px;height:54px;background:linear-gradient(135deg,var(--tm),var(--td));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;cursor:pointer;overflow:hidden;transition:.25s}
+.hicon:hover{transform:scale(1.05)}
+.hicon img{width:100%;height:100%;object-fit:cover}
+.htitle h1{font-family:'Amiri',serif;font-size:19px;font-weight:700;color:var(--td)}
+.hsub{font-size:12px;color:#777}
+.hvis{font-size:11px;color:var(--tl);background:var(--gp);padding:2px 7px;border-radius:6px;display:inline-block;margin-top:3px}
+.hright{display:flex;align-items:center;gap:14px}
+.dbox{text-align:center}
+.dhijri{font-family:'Amiri',serif;font-size:13px;color:var(--gd);font-weight:600}
+.dgreg{font-size:11px;color:#777}
+.dtime{background:var(--tm);color:#fff;padding:5px 11px;border-radius:7px;font-size:14px;font-weight:700;margin:6px 0}
+.arabesque{height:3px;background:linear-gradient(90deg,transparent,var(--gd),var(--tk),var(--gd),transparent);opacity:.6}
+nav{background:var(--tm)}
+.nav-ul{display:flex;list-style:none;overflow-x:auto}
+.nav-ul::-webkit-scrollbar{display:none}
+.nav-ul li a{display:block;padding:11px 16px;color:#fff;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;border-bottom:3px solid transparent;cursor:pointer}
+.nav-ul li a:hover,.nav-ul li a.on{background:rgba(255,255,255,.15);border-bottom-color:var(--gd)}
+.page{display:none;padding:18px 0;animation:fi .3s}
+.page.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pwrap{display:grid;grid-template-columns:270px 1fr 270px;gap:18px;max-width:1380px;margin:0 auto;padding:0 18px}
+.pfull{max-width:1180px;margin:0 auto;padding:0 18px}
+.sc{background:var(--wh);border-radius:15px;box-shadow:0 3px 16px var(--sh);margin-bottom:18px;overflow:hidden}
+.sc-h{background:linear-gradient(135deg,var(--tm),var(--tl));color:#fff;padding:13px 16px;font-weight:700;font-size:14px}
+.sc-b{padding:14px}
+.stitle{font-family:'Amiri',serif;font-size:17px;font-weight:700;color:var(--td);margin:22px 0 14px;padding-bottom:9px;border-bottom:2px solid var(--gl)}
+.hero{background:linear-gradient(135deg,var(--td),var(--tm));color:#fff;border-radius:18px;padding:28px;text-align:center;margin-bottom:22px}
+.hero h2{font-family:'Amiri',serif;font-size:22px;font-weight:700;margin-bottom:8px}
+.hero p{font-size:13px;opacity:.95;margin-bottom:18px}
+.hstats{display:flex;justify-content:center;gap:28px}
+.hs-v{font-size:20px;font-weight:800;display:block}
+.hs-l{font-size:12px;opacity:.85}
+.car{position:relative;width:100%;height:380px;overflow:hidden;border-radius:15px;box-shadow:0 8px 28px var(--sh);margin-bottom:26px}
+.car-sl{position:absolute;inset:0;opacity:0;transition:opacity 1s}
+.car-sl.on{opacity:1}
+.car-sl img{width:100%;height:100%;object-fit:cover}
+.car-ctrl{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;padding:0 8px;transform:translateY(-50%)}
+.car-btn{background:rgba(255,255,255,.88);border:none;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:17px;color:var(--td)}
+.car-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:7px}
+.car-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.45);cursor:pointer}
+.car-dot.on{background:#fff;width:28px;border-radius:5px}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:18px}
+.ni{background:var(--wh);border-radius:15px;overflow:hidden;box-shadow:0 3px 16px var(--sh);display:flex;flex-direction:column}
+.ni-img{height:190px;background:linear-gradient(135deg,var(--tk),var(--tm));overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.ni-img img{width:100%;height:100%;object-fit:cover}
+.ni-body{padding:14px;flex:1;display:flex;flex-direction:column}
+.ni-meta{display:flex;gap:9px;font-size:11px;color:#777;margin-bottom:7px;flex-wrap:wrap}
+.ni-cat{background:var(--gp);padding:2px 7px;border-radius:5px}
+.ni-title{font-weight:700;font-size:14px;margin-bottom:7px}
+.ni-exc{font-size:12px;color:#666;line-height:1.55;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rm-btn{background:var(--tm);color:#fff;border:none;padding:7px 14px;border-radius:7px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:12px;align-self:flex-start}
+.pag{display:flex;justify-content:center;align-items:center;gap:9px;margin-top:26px}
+.pag button{background:var(--tm);color:#fff;border:none;padding:9px 18px;border-radius:7px;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:600}
+.pag button:disabled{background:#ccc;cursor:not-allowed}
+.pag span{font-weight:600;color:var(--td)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border:none;border-radius:9px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;text-decoration:none}
+.btn-p{background:var(--tm);color:#fff}.btn-p:hover{background:var(--td)}
+.btn-o{background:transparent;border:2px solid var(--tk);color:var(--tm)}
+.btn-sm{padding:5px 11px;font-size:11px}
+.btn-d{background:var(--rd);color:#fff}
+.btn-w{background:var(--or);color:#fff}
+.btn-s{background:var(--gn);color:#fff}
+.live-v{background:var(--wh);border-radius:15px;overflow:hidden;box-shadow:0 3px 16px var(--sh);margin-bottom:14px}
+.live-h{background:linear-gradient(135deg,var(--gd),var(--gl));color:var(--td);padding:11px 14px;font-weight:700;display:flex;align-items:center;gap:7px;font-size:13px}
+.live-b{background:var(--rd);color:#fff;padding:2px 7px;border-radius:11px;font-size:10px;animation:pl 2s infinite}
+@keyframes pl{0%,100%{opacity:1}50%{opacity:.6}}
+.vwrap{position:relative;padding-bottom:56.25%;background:#000}
+.vwrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.mapbox{background:var(--wh);border-radius:15px;overflow:hidden;box-shadow:0 3px 16px var(--sh);margin-bottom:18px}
+.map-h{background:linear-gradient(135deg,var(--tm),var(--tl));color:#fff;padding:11px 14px;font-weight:700;font-size:13px}
+.map-wrap{height:250px}
+.map-wrap iframe{width:100%;height:100%;border:none}
+.wx{text-align:center;padding:6px 0}
+.wx-ico{font-size:38px}.wx-tmp{font-size:26px;font-weight:800}.wx-dsc{font-size:12px;color:#777}
+.pr-i{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #eee}
+.pr-i:last-child{border-bottom:none}
+.pr-n{font-size:13px}
+.pr-t{font-family:'Amiri',serif;font-size:14px;font-weight:700;background:var(--gp);padding:3px 11px;border-radius:7px}
+.ci{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #f0f0f0}
+.ci-v{font-size:13px;font-weight:600}.ci-l{font-size:11px;color:#888}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.scard{background:var(--wh);border-radius:13px;padding:18px;text-align:center;cursor:pointer;border:2px solid transparent;box-shadow:0 2px 9px var(--sh);transition:.25s}
+.scard:hover{transform:translateY(-4px);border-color:var(--tk)}
+.scard-ico{font-size:30px;margin-bottom:9px}.scard-nm{font-weight:700;font-size:13px;margin-bottom:5px}
+.scard-tag{display:inline-block;font-size:10px;background:var(--gp);padding:2px 9px;border-radius:18px}
+.evlist{display:flex;flex-direction:column;gap:11px}
+.ev-i{display:flex;gap:13px;padding:13px;background:var(--wh);border-radius:11px;box-shadow:0 2px 9px var(--sh)}
+.ev-dt{background:var(--tm);color:#fff;padding:9px;border-radius:9px;text-align:center;min-width:56px}
+.ev-day{font-size:17px;font-weight:800}.ev-mo{font-size:10px}
+.ev-ti{font-weight:700;font-size:13px}.ev-tm{font-size:12px;color:#666}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px}
+.gi{aspect-ratio:1;border-radius:11px;overflow:hidden;cursor:pointer}
+.gi img{width:100%;height:100%;object-fit:cover}
+.faq-box{background:var(--wh);border-radius:15px;padding:22px;box-shadow:0 3px 16px var(--sh);margin-bottom:22px}
+.faq-i{border-bottom:1px solid #eee;padding:14px 0}
+.faq-i:last-child{border-bottom:none}
+.faq-q{font-weight:700;font-size:14px;color:var(--td);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-q::after{content:'▼';font-size:11px;transition:transform .3s}
+.faq-i.on .faq-q::after{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s}
+.faq-i.on .faq-a{max-height:500px;margin-top:10px}
+.faq-a p{font-size:13px;color:#666;line-height:1.6}
+.art-full{background:var(--wh);border-radius:15px;overflow:hidden;box-shadow:0 3px 16px var(--sh)}
+.art-img{width:100%;height:380px;object-fit:cover}
+.art-cnt{padding:28px}
+.art-hd{margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--gl)}
+.art-ttl{font-family:'Amiri',serif;font-size:26px;margin-bottom:10px}
+.art-meta{display:flex;gap:14px;font-size:12px;color:#666;flex-wrap:wrap}
+.art-body{font-size:14px;line-height:1.8}
+.art-body p{margin-bottom:14px}
+.back-btn{background:var(--cr);color:var(--tm);border:none;padding:9px 18px;border-radius:9px;cursor:pointer;margin-bottom:18px;font-family:'Cairo',sans-serif}
+.svc-hdr{background:linear-gradient(135deg,var(--td),var(--tm));color:#fff;padding:36px 18px;border-radius:15px;margin-bottom:22px;text-align:center}
+.svc-hdr h1{font-family:'Amiri',serif;font-size:26px;margin-bottom:8px}
+.adm-dash{background:var(--wh);border-radius:15px;padding:22px;box-shadow:0 3px 16px var(--sh);margin-bottom:22px}
+.adm-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #eee;padding-bottom:9px}
+.adm-tab{padding:9px 18px;background:var(--cr);border:none;border-radius:9px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:12px}
+.adm-tab.on{background:var(--tm);color:#fff}
+.adm-cnt{display:none}.adm-cnt.on{display:block}
+.adm-form{background:var(--cr);border-radius:11px;padding:18px;margin-bottom:18px}
+.adm-form h4{font-family:'Amiri',serif;margin-bottom:14px;font-size:16px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.ff{display:flex;flex-direction:column;gap:3px}
+.ff.full{grid-column:1/-1}
+.ff label{font-size:12px;font-weight:600;color:#555}
+.ff input,.ff textarea,.ff select{width:100%;padding:9px 11px;border:2px solid #ddd;border-radius:7px;font-family:'Cairo',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.ff input:focus,.ff textarea:focus,.ff select:focus{border-color:var(--tm)}
+.ff textarea{resize:vertical;min-height:75px}
+.dtbl{width:100%;border-collapse:collapse;margin-top:14px}
+.dtbl th,.dtbl td{padding:11px;text-align:right;border-bottom:1px solid #eee;font-size:13px}
+.dtbl th{background:var(--tm);color:#fff}
+.fup{border:2px dashed #ddd;border-radius:9px;padding:18px;text-align:center;background:#fff;cursor:pointer;font-size:13px;color:#888;display:block}
+.fup input{display:none}
+.fprev{margin-top:8px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9999}
+.ov.on{display:flex}
+.modal{background:#fff;border-radius:18px;max-width:580px;width:100%;max-height:90vh;overflow-y:auto;position:relative}
+.modal-x{position:absolute;top:14px;left:14px;background:var(--cr);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px}
+.modal h2{font-family:'Amiri',serif;padding:18px 22px 9px}
+.sgrd2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sit{background:var(--cr);padding:14px;border-radius:9px}
+.sit label{display:block;font-weight:600;margin-bottom:7px;font-size:13px}
+.sit input{width:100%;padding:7px 9px;border:2px solid #ddd;border-radius:6px;font-family:'Cairo',sans-serif}
+.toast{position:fixed;top:75px;left:50%;transform:translateX(-50%) translateY(-18px);background:#fff;padding:12px 22px;border-radius:11px;box-shadow:0 8px 28px rgba(0,0,0,.18);z-index:99999;opacity:0;visibility:hidden;transition:all .3s;font-size:14px;font-weight:600}
+.toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-right:4px solid var(--gn)}.toast.er{border-right:4px solid var(--rd)}.toast.inf{border-right:4px solid var(--tm)}
+.sbar{background:#fff;padding:11px 18px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;gap:9px;position:sticky;top:0;z-index:100;position:relative}
+.sbar input{flex:1;padding:11px 14px;border:2px solid #ddd;border-radius:11px;font-family:'Cairo',sans-serif;font-size:13px;direction:rtl;outline:none}
+.sbar input:focus{border-color:var(--tl)}
+.sbar button{background:var(--tm);color:#fff;border:none;border-radius:11px;padding:11px 18px;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:600}
+.sres{position:absolute;top:100%;right:18px;left:18px;background:#fff;border-radius:14px;box-shadow:0 11px 36px var(--sh);max-height:420px;overflow-y:auto;display:none;z-index:999}
+.sres.on{display:block}
+.sres-i{padding:13px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:13px}
+.sres-i:hover{background:var(--cr)}
+.cloud-box{background:linear-gradient(135deg,#e8f4fd,#d1ecf1);border:2px solid var(--tm);border-radius:12px;padding:18px;margin-bottom:18px}
+.cloud-box h4{color:var(--td);margin-bottom:11px;font-size:15px}
+footer{background:#1a4a4a;color:#fff;margin-top:36px;padding:36px 18px 18px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:28px;max-width:1100px;margin:0 auto 28px}
+.fs h4{font-family:'Amiri',serif;font-size:17px;margin-bottom:14px;color:var(--gl)}
+.fs p,.fs a{font-size:12px;line-height:1.8;color:#b8d4d4;text-decoration:none;display:block}
+.fs a:hover{color:#fff}
+.fbtm{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;text-align:center;font-size:12px;color:#88b8b8}
+@media(max-width:1024px){.pwrap{grid-template-columns:1fr 2fr}#sb-left{display:none}}
+@media(max-width:768px){.hdr{flex-direction:column;text-align:center}.pwrap{grid-template-columns:1fr!important}.frow,.sgrd2{grid-template-columns:1fr}.car{height:190px}.fgrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<div class="stars"></div>
-
-<!-- زر الواتساب العائم -->
-<a href="https://wa.me/213672021427" class="whatsapp-btn" target="_blank" aria-label="تواصل عبر واتساب">💬</a>
-
-<!-- شريط التنقل (تم حذف روابط الوجهات والخدمات والعروض) -->
-<nav>
-  <div class="nav-logo">
-    <div class="nav-logo-icon">🚌</div>
+<div class="toast" id="toast"></div>
+<div class="alert" id="alertBar">
+  <span id="alertIcon">&#x1F6A8;</span>
+  <span id="alertText">تنبيه هام: حالة الطوارئ - يرجى الاتصال بالرقم 1548</span>
+  <button onclick="dimAlert()">&#x2715;</button>
+</div>
+<div class="abar" id="abar">
+  <span>&#x1F6E1;&#xFE0F; لوحة الإدارة</span>
+  <div>
+    <button class="abtn" onclick="goPage('admin')">&#x1F4CA; التحكم</button>
+    <button class="abtn" onclick="syncNow()">&#x2601;&#xFE0F; مزامنة</button>
+    <button class="abtn out" onclick="doLogout()">&#x1F6AA; خروج</button>
+  </div>
+</div>
+<div class="tkr"><div class="tkr-lbl">&#x1F4E2; عاجل</div><div class="tkr-wrap"><div class="tkr-track"><div class="tkr-inner" id="tkr1"></div><div class="tkr-inner" id="tkr2"></div></div></div></div>
+<div class="sbar">
+  <span>&#x1F50D;</span>
+  <input type="search" id="srchInp" placeholder="ابحث في الموقع..." oninput="doSearch(this.value)">
+  <button onclick="doSearch(document.getElementById('srchInp').value)">بحث</button>
+  <div class="sres" id="sres"></div>
+</div>
+<header>
+  <div class="hdr">
+    <div class="hlogo">
+      <div class="hicon" id="hicon" onclick="iconClick()">&#x1F3DB;&#xFE0F;</div>
+      <div class="htitle">
+        <h1 id="siteTitle">بلدية حجاج</h1>
+        <div class="hsub" id="siteSub">ولاية مستغانم</div>
+        <div class="hvis">&#x1F441;&#xFE0F; <span id="visNum">32,841</span> زائر</div>
+      </div>
+    </div>
+    <div class="hright">
+      <div class="dbox">
+        <div class="dtime" id="dtime">--:--:--</div>
+        <div class="dhijri" id="dhijri">--</div>
+        <div class="dgreg" id="dgreg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="arabesque"></div>
+  <nav>
+    <ul class="nav-ul">
+      <li><a onclick="goPage('home')" id="nav-home" class="on">&#x1F3E0; الرئيسية</a></li>
+      <li><a onclick="goPage('council')" id="nav-council">&#x1F3DB;&#xFE0F; المجلس</a></li>
+      <li><a onclick="goPage('services')" id="nav-services">&#x1F4CB; المصالح</a></li>
+      <li><a onclick="goPage('news')" id="nav-news">&#x1F4F0; الأخبار</a></li>
+      <li><a onclick="goPage('gallery')" id="nav-gallery">&#x1F4F8; المعرض</a></li>
+      <li><a onclick="goPage('forms')" id="nav-forms">&#x1F4C4; الاستمارات</a></li>
+      <li><a onclick="goPage('events')" id="nav-events">&#x1F4C5; الفعاليات</a></li>
+      <li><a onclick="goPage('contact')" id="nav-contact">&#x1F4DE; اتصل بنا</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+<div class="page on" id="page-home">
+  <div class="pwrap">
+    <aside id="sb-right">
+      <div class="live-v">
+        <div class="live-h"><span class="live-b">مباشر</span> الحرم المكي</div>
+        <div class="vwrap"><iframe src="https://www.youtube.com/embed/live_stream?channel=UC5jIKjA5T5xJQK6gFZKqPvA" allowfullscreen></iframe></div>
+      </div>
+      <div class="sc"><div class="sc-h">الطقس</div><div class="sc-b"><div class="wx"><div class="wx-ico">&#x2600;&#xFE0F;</div><div class="wx-tmp">22&deg;C</div><div class="wx-dsc">مشمس - مستغانم</div></div></div></div>
+      <div class="sc">
+        <div class="sc-h">مواقيت الصلاة</div>
+        <div class="sc-b">
+          <div class="pr-i"><span class="pr-n">الفجر</span><span class="pr-t">05:08</span></div>
+          <div class="pr-i"><span class="pr-n">الظهر</span><span class="pr-t">12:45</span></div>
+          <div class="pr-i"><span class="pr-n">العصر</span><span class="pr-t">16:05</span></div>
+          <div class="pr-i"><span class="pr-n">المغرب</span><span class="pr-t">18:32</span></div>
+          <div class="pr-i"><span class="pr-n">العشاء</span><span class="pr-t">19:55</span></div>
+        </div>
+      </div>
+      <div class="mapbox"><div class="map-h">الموقع</div><div class="map-wrap"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-0.2,35.8,0.5,36.3&layer=mapnik&marker=36.05,-0.05" loading="lazy"></iframe></div></div>
+    </aside>
     <div>
-      <div class="nav-logo-text">منصور بن نونة</div>
-      <div class="nav-logo-sub">للنقل السريع — حجاج، مستغانم</div>
-    </div>
-  </div>
-  <ul class="nav-links">
-    <li><a href="#transport">النقل</a></li>
-    <li><a href="#map-section">موقعنا</a></li>
-    
-    <li><a href="#contact">اتصل بنا</a></li>
-    <li><a href="tel:+213672021427" class="nav-cta">📞 احجز الآن</a></li>
-  </ul>
-</nav>
-
-<!-- القسم الرئيسي (hero) - تم إزالة زر العروض -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-content">
-    <div class="hero-badge">✨النقل السريع و الفوري — بلدية حجاج، مستغانم</div>
-    <h1 class="hero-title">
-      سافر مع<br>
-      <span>منصور بن نونة</span>
-    </h1>
-    <p class="hero-subtitle"> النقل داخل وخارج ولاية مستغانم — نخطط لسفرك، أنت تستمتع بالرحلة</p>
-    <div class="hero-btns">
-      <a href="#transport" class="btn-primary">🚌 خدمة النقل</a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-num">+15</span>
-        <span class="stat-label">سنة خبرة</span>
+      <div class="hero">
+        <h2 id="heroTitle">مرحباً بكم في بلدية حجاج</h2>
+        <p>في خدمة المواطن</p>
+        <div class="hstats">
+          <div><span class="hs-v" id="popCount">+18,000</span><span class="hs-l">ساكن</span></div>
+          <div><span class="hs-v" id="svcCount">3</span><span class="hs-l">مصلحة</span></div>
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-num">24/7</span>
-        <span class="stat-label">دعم مستمر</span>
+      <div class="car" id="carousel">
+        <div class="car-sl on"><div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem">&#x1F3DB;&#xFE0F;</div></div>
+        <div class="car-ctrl"><button class="car-btn" onclick="moveCar(-1)">&#x276F;</button><button class="car-btn" onclick="moveCar(1)">&#x276E;</button></div>
+        <div class="car-dots" id="car-dots"></div>
       </div>
+      <div class="faq-box"><div class="stitle">الاسئلة الشائعة</div><div id="faqList"></div></div>
+      <div class="stitle">آخر الاخبار</div>
+      <div class="ngrid" id="newsHome"></div>
+      <div class="pag" id="pagHome"></div>
     </div>
+    <aside id="sb-left">
+      <div class="sc"><div class="sc-h">اتصال سريع</div><div class="sc-b">
+        <div class="ci"><span>&#x1F4CD;</span><div><div class="ci-l">العنوان</div><div class="ci-v">حجاج، مستغانم</div></div></div>
+        <div class="ci"><span>&#x1F4DE;</span><div><div class="ci-l">الهاتف</div><div class="ci-v" id="ctPhone">045 xx xx xx</div></div></div>
+        <div class="ci"><span>&#x1F6A8;</span><div><div class="ci-l">طوارئ</div><div class="ci-v" style="color:var(--rd)" id="ctEmg">1548</div></div></div>
+      </div></div>
+    </aside>
   </div>
-</section>
-
-<!-- قسم البحث مع تبويبات تفاعلية -->
-<div class="search-section">
-  <div class="search-card animate-on-scroll">
-    <div class="search-tabs" role="tablist">
- 
-     
-      <button class="tab" id="tab-transport" role="tab" aria-selected="false" aria-controls="search-transport">🚌 حجز نقل</button>
-   
-    </div>
-    <div class="search-content" id="search-air">
-      <!-- المحتوى سيتم تبديله بالجافاسكربت -->
+</div>
+<div class="page" id="page-svcdetail"><div class="pfull"><button class="back-btn" onclick="goPage('services')">العودة</button><div class="svc-hdr"><h1 id="svcName">المصلحة</h1><p id="svcDesc"></p></div><div class="stitle">اخبار المصلحة</div><div class="ngrid" id="newsSvc"></div></div></div>
+<div class="page" id="page-article"><div class="pfull"><button class="back-btn" onclick="backFromArt()">العودة</button><article class="art-full" id="artContent"></article></div></div>
+<div class="page" id="page-admin">
+  <div class="pfull">
+    <div class="stitle">لوحة التحكم</div>
+    <div class="adm-dash">
+      <div class="adm-tabs">
+        <button class="adm-tab on" onclick="aTab('settings',this)">الاعدادات</button>
+        <button class="adm-tab" onclick="aTab('cloud',this)">المزامنة</button>
+        <button class="adm-tab" onclick="aTab('alert',this)">الطوارئ</button>
+        <button class="adm-tab" onclick="aTab('ticker',this)">الشريط</button>
+        <button class="adm-tab" onclick="aTab('faq',this)">الاسئلة</button>
+        <button class="adm-tab" onclick="aTab('events',this)">الفعاليات</button>
+        <button class="adm-tab" onclick="aTab('services',this)">المصالح</button>
+        <button class="adm-tab" onclick="aTab('articles',this)">الاخبار</button>
+        <button class="adm-tab" onclick="aTab('council',this)">المجلس</button>
+        <button class="adm-tab" onclick="aTab('forms',this)">الاستمارات</button>
+        <button class="adm-tab" onclick="aTab('gallery',this)">المعرض</button>
+      </div>
+      <div class="adm-cnt on" id="at-settings">
+        <div class="adm-form"><h4>اعدادات الموقع</h4>
+          <div class="sgrd2">
+            <div class="sit"><label>ايقونة البلدية</label><input id="setIcon" value="&#x1F3DB;&#xFE0F;" maxlength="2"></div>
+            <div class="sit"><label>اسم الموقع</label><input id="setTitle" value="بلدية حجاج"></div>
+            <div class="sit"><label>الوصف الفرعي</label><input id="setSub" value="ولاية مستغانم"></div>
+            <div class="sit"><label>عدد السكان</label><input id="setPop" type="number" value="18000"></div>
+            <div class="sit"><label>رقم الطوارئ</label><input id="setEmg" value="1548"></div>
+            <div class="sit"><label>البريد</label><input id="setEmail" type="email" value="mairie.hajjaj@mostaganem.dz"></div>
+          </div>
+          <div class="sit" style="margin-top:12px"><label>شعار البلدية</label>
+            <label class="fup"><input type="file" id="logoFile" accept="image/*" onchange="upLogo(this)"><div>رفع صورة</div></label>
+            <div class="fprev" id="logoPrev"></div>
+          </div>
+          <button class="btn btn-p" style="margin-top:14px" onclick="saveSettings()">حفظ الاعدادات</button>
+        </div>
+      </div>
+      <div class="adm-cnt" id="at-cloud">
+        <div class="cloud-box">
+          <h4>اعداد المزامنة السحابية - JSONBin</h4>
+          <div class="frow">
+            <div class="ff"><label>API Key</label><input id="jbKey" placeholder="$2a$10$..."></div>
+            <div class="ff"><label>Bin ID</label><input id="jbBin" placeholder="64abc123..."></div>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="saveCloudCfg()">حفظ</button>
+          <button class="btn btn-s btn-sm" style="margin-right:8px" onclick="syncNow()">مزامنة الآن</button>
+          <button class="btn btn-w btn-sm" style="margin-right:8px" onclick="pushAll()">رفع كل البيانات</button>
+        </div>
+      </div>
+      <div class="adm-cnt" id="at-alert">
+        <div class="adm-form"><h4>شريط التنبيه</h4>
+          <div class="frow">
+            <div class="ff"><label>الرمز</label><input id="algIcon" value="&#x1F6A8;" maxlength="2"></div>
+            <div class="ff"><label>النص</label><input id="algText" value="تنبيه هام"></div>
+          </div>
+          <div style="display:flex;gap:9px;margin-top:12px">
+            <button class="btn btn-p btn-sm" onclick="saveAlert()">حفظ</button>
+            <button class="btn btn-s btn-sm" onclick="showAlertBar()">اظهار</button>
+            <button class="btn btn-d btn-sm" onclick="hideAlertBar()">اخفاء</button>
+          </div>
+        </div>
+      </div>
+      <div class="adm-cnt" id="at-ticker">
+        <div class="adm-form"><h4>شريط الاخبار</h4>
+          <div class="frow">
+            <div class="ff"><label>الرمز</label><input id="tkIcon" value="&#x1F4E2;" maxlength="2"></div>
+            <div class="ff"><label>النص</label><input id="tkText" placeholder="نص الخبر"></div>
+          </div>
+          <button class="btn btn-p btn-sm" style="margin-top:10px" onclick="addTicker()">اضافة</button>
+        </div>
+        <table class="dtbl"><thead><tr><th>الرمز</th><th>النص</th><th>حذف</th></tr></thead><tbody id="tkTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-faq">
+        <div class="adm-form"><h4>الاسئلة الشائعة</h4>
+          <input type="hidden" id="faqEId">
+          <div class="ff" style="margin-bottom:12px"><label>السؤال</label><input id="faqQ"></div>
+          <div class="ff" style="margin-bottom:12px"><label>الإجابة</label><textarea id="faqA" rows="3"></textarea></div>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="saveFaq()">حفظ</button><button class="btn btn-o btn-sm" onclick="clrFaq()">الغاء</button></div>
+        </div>
+        <table class="dtbl"><thead><tr><th>السؤال</th><th>الاجابة</th><th>اجراءات</th></tr></thead><tbody id="faqTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-events">
+        <div class="adm-form"><h4>الفعاليات</h4>
+          <input type="hidden" id="evEId">
+          <div class="frow">
+            <div class="ff"><label>العنوان</label><input id="evTitle"></div>
+            <div class="ff"><label>التاريخ</label><input id="evDate" type="date"></div>
+          </div>
+          <div class="frow">
+            <div class="ff"><label>الوقت</label><input id="evTime" type="time"></div>
+            <div class="ff"><label>المكان</label><input id="evLoc"></div>
+          </div>
+          <div class="ff full" style="margin-bottom:12px"><label>الوصف</label><textarea id="evDesc" rows="2"></textarea></div>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="saveEvent()">حفظ</button><button class="btn btn-o btn-sm" onclick="clrEv()">الغاء</button></div>
+        </div>
+        <table class="dtbl"><thead><tr><th>الفعالية</th><th>التاريخ</th><th>الوقت</th><th>اجراءات</th></tr></thead><tbody id="evTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-services">
+        <div class="adm-form"><h4>المصالح</h4>
+          <input type="hidden" id="svEId">
+          <div class="frow">
+            <div class="ff"><label>الاسم</label><input id="svName"></div>
+            <div class="ff"><label>التصنيف</label><select id="svCat"><option value="اداري">اداري</option><option value="اشغال">اشغال</option><option value="اجتماعي">اجتماعي</option><option value="بيئة">بيئة</option></select></div>
+          </div>
+          <div class="ff full" style="margin-bottom:12px"><label>الوصف</label><textarea id="svDesc" rows="2"></textarea></div>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="saveSvc()">حفظ</button><button class="btn btn-o btn-sm" onclick="clrSvc()">الغاء</button></div>
+        </div>
+        <table class="dtbl"><thead><tr><th>المصلحة</th><th>التصنيف</th><th>اجراءات</th></tr></thead><tbody id="svTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-articles">
+        <div class="adm-form"><h4>الاخبار</h4>
+          <input type="hidden" id="arEId">
+          <div class="frow">
+            <div class="ff"><label>العنوان</label><input id="arTitle"></div>
+            <div class="ff"><label>المصلحة</label><select id="arSvc"><option value="">بدون ارتباط</option></select></div>
+          </div>
+          <div class="frow">
+            <div class="ff"><label>التصنيف</label><select id="arCat"><option value="اداري">اداري</option><option value="بيئة">بيئة</option><option value="عام">عام</option></select></div>
+            <div class="ff"><label>الحالة</label><select id="arSt"><option value="published">منشور</option><option value="draft">مسودة</option></select></div>
+          </div>
+          <div class="ff full" style="margin-bottom:12px">
+            <label>صورة</label>
+            <label class="fup"><input type="file" id="arImg" accept="image/*" onchange="prevImg(this,'arImgPrev')"><div>رفع صورة</div></label>
+            <div class="fprev" id="arImgPrev"></div>
+          </div>
+          <div class="ff full" style="margin-bottom:12px"><label>المحتوى</label><textarea id="arBody" rows="5"></textarea></div>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="saveArt()">حفظ</button><button class="btn btn-o btn-sm" onclick="clrArt()">الغاء</button></div>
+        </div>
+        <table class="dtbl"><thead><tr><th>العنوان</th><th>المصلحة</th><th>التاريخ</th><th>اجراءات</th></tr></thead><tbody id="arTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-council">
+        <div class="adm-form"><h4>المجلس</h4>
+          <input type="hidden" id="mbEId">
+          <div class="frow">
+            <div class="ff"><label>الاسم</label><input id="mbName"></div>
+            <div class="ff"><label>المنصب</label><input id="mbRole"></div>
+          </div>
+          <div class="frow">
+            <div class="ff"><label>الحزب</label><input id="mbParty"></div>
+            <div class="ff"><label>صورة</label>
+              <label class="fup"><input type="file" id="mbImg" accept="image/*" onchange="prevImg(this,'mbImgPrev')"><div>رفع صورة</div></label>
+              <div class="fprev" id="mbImgPrev"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="saveMb()">حفظ</button><button class="btn btn-o btn-sm" onclick="clrMb()">الغاء</button></div>
+        </div>
+        <table class="dtbl"><thead><tr><th>الصورة</th><th>الاسم</th><th>المنصب</th><th>اجراءات</th></tr></thead><tbody id="mbTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-forms">
+        <div class="adm-form"><h4>الاستمارات</h4>
+          <input type="hidden" id="fmEId">
+          <div class="frow">
+            <div class="ff"><label>العنوان</label><input id="fmTitle"></div>
+            <div class="ff"><label>التصنيف</label><select id="fmCat"><option value="الحالة المدنية">الحالة المدنية</option><option value="التعمير">التعمير</option></select></div>
+          </div>
+          <div class="ff full" style="margin-bottom:12px"><label>الوصف</label><textarea id="fmDesc" rows="2"></textarea></div>
+          <div class="ff full" style="margin-bottom:12px">
+            <label>ملف PDF</label>
+            <label class="fup"><input type="file" id="fmFile" accept=".pdf" onchange="prevFile(this)"><div>رفع ملف</div></label>
+            <div class="fprev" id="fmFilePrev"></div>
+          </div>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-sm" onclick="saveFm()">حفظ</button><button class="btn btn-o btn-sm" onclick="clrFm()">الغاء</button></div>
+        </div>
+        <table class="dtbl"><thead><tr><th>الاستمارة</th><th>التصنيف</th><th>الملف</th><th>اجراءات</th></tr></thead><tbody id="fmTbl"></tbody></table>
+      </div>
+      <div class="adm-cnt" id="at-gallery">
+        <div class="adm-form"><h4>المعرض</h4>
+          <div class="ff" style="margin-bottom:10px"><label>العنوان</label><input id="glTitle" placeholder="وصف الصورة"></div>
+          <label class="fup"><input type="file" id="glImg" accept="image/*" onchange="prevImg(this,'glImgPrev')"><div>رفع صورة</div></label>
+          <div class="fprev" id="glImgPrev"></div>
+          <button class="btn btn-p btn-sm" style="margin-top:10px" onclick="saveGl()">حفظ</button>
+        </div>
+        <div class="ggrid" id="glAdmGrid"></div>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- قسم النقل (كما هو) -->
-<section id="transport">
-  <div class="section-header animate-on-scroll">
-    <span class="section-label">خدمة النقل</span>
-    <div class="divider"></div>
-    <h2 class="section-title">نقل داخل وخارج ولاية مستغانم</h2>
-    <p class="section-desc">من بلدية حجاج إلى أي وجهة — راحتك وأمانك أولويتنا</p>
-  </div>
-
-  <div class="transport-intro animate-on-scroll">
-    <div class="transport-text">
-      <h3>🚌 نحن في خدمتكم</h3>
-      <p>
-        نوفر خدمة نقل احترافية وموثوقة انطلاقاً من <strong style="color:var(--gold)">بلدية حجاج</strong> إلى جميع مناطق ولاية مستغانم وخارجها. سواء كانت رحلة عائلية، مدرسية، مؤسساتية، أو فردية — لدينا الحل المناسب لك.
-      </p>
-      <div class="transport-highlights">
-   
-        <div class="transport-highlight"><span>✅</span> خدمة على مدار الساعة</div>
-        <div class="transport-highlight"><span>✅</span> حجز مسبق أو فوري</div>
-      </div>
-    </div>
-    <div class="transport-visual">
-      <span class="transport-big-icon">🚌</span>
-      <h4>حجاج ← مستغانم وما جورها</h4>
-      <p style="margin-bottom:1rem;">انطلق بأمان وراحة مع منصور بن نونة</p>
-      <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap;">
-        <span style="background:rgba(201,168,76,0.15);color:var(--gold);padding:5px 14px;border-radius:20px;font-size:0.8rem;border:1px solid rgba(201,168,76,0.3);">🏙️ نقل حضري</span>
-        <span style="background:rgba(201,168,76,0.15);color:var(--gold);padding:5px 14px;border-radius:20px;font-size:0.8rem;border:1px solid rgba(201,168,76,0.3);">🛣️ نقل بين الولايات</span>
-        <span style="background:rgba(201,168,76,0.15);color:var(--gold);padding:5px 14px;border-radius:20px;font-size:0.8rem;border:1px solid rgba(201,168,76,0.3);">✈️ نقل مطاري</span>
-        <span style="background:rgba(201,168,76,0.15);color:var(--gold);padding:5px 14px;border-radius:20px;font-size:0.8rem;border:1px solid rgba(201,168,76,0.3);">👨‍👩‍👧 رحلات عائلية</span>
-      </div>
+<div class="page" id="page-council"><div class="pfull"><div class="stitle">المجلس البلدي</div><div class="sgrid" id="councilGrid"></div></div></div>
+<div class="page" id="page-services"><div class="pfull"><div class="stitle">المصالح</div><div class="sgrid" id="svcGrid"></div></div></div>
+<div class="page" id="page-news"><div class="pfull"><div class="stitle">الاخبار</div><div class="ngrid" id="newsFull"></div><div class="pag" id="pagFull"></div></div></div>
+<div class="page" id="page-gallery"><div class="pfull"><div class="stitle">المعرض</div><div class="ggrid" id="glPubGrid"></div></div></div>
+<div class="page" id="page-forms"><div class="pfull"><div class="stitle">الاستمارات</div><div class="sgrid" id="fmGrid"></div></div></div>
+<div class="page" id="page-events"><div class="pfull"><div class="stitle">الفعاليات</div><div class="evlist" id="evList"></div></div></div>
+<div class="page" id="page-contact"><div class="pfull"><div class="stitle">اتصل بنا</div><div class="sc" style="padding:22px;max-width:500px">
+  <div class="ci"><span>&#x1F4CD;</span><div><div class="ci-l">العنوان</div><div class="ci-v">حجاج، مستغانم</div></div></div>
+  <div class="ci"><span>&#x1F4DE;</span><div><div class="ci-l">الهاتف</div><div class="ci-v" id="ctPhone2">045 xx xx xx</div></div></div>
+  <div class="ci"><span>&#x1F4E7;</span><div><div class="ci-l">البريد</div><div class="ci-v" id="ctEmail">mairie.hajjaj@mostaganem.dz</div></div></div>
+  <div class="ci"><span>&#x1F6A8;</span><div><div class="ci-l">طوارئ</div><div class="ci-v" style="color:var(--rd)" id="ctEmg2">1548</div></div></div>
+</div></div></div>
+</main>
+<footer><div class="fgrid">
+  <div class="fs"><h4>بلدية <span id="footTitle">حجاج</span></h4><p>بلدية حجاج من بلديات ولاية مستغانم - في خدمة المواطن</p></div>
+  <div class="fs"><h4>اتصل بنا</h4><p>حجاج، مستغانم</p><p id="footEmail">mairie.hajjaj@mostaganem.dz</p><p>طوارئ: <span id="footEmg">1548</span></p></div>
+  <div class="fs"><h4>روابط</h4><a href="#">المصالح الادارية</a><a href="#">الاستمارات</a></div>
+</div><div class="fbtm">2026 - <span id="footCopy">بلدية حجاج، ولاية مستغانم</span></div></footer>
+<div class="ov" id="loginOv">
+  <div class="modal">
+    <button class="modal-x" onclick="closeOv('loginOv')">&#x2715;</button>
+    <h2>تسجيل الدخول</h2>
+    <div style="padding:0 22px 22px">
+      <input type="text" id="lgUser" placeholder="اسم المستخدم" style="width:100%;padding:11px;margin-bottom:11px;border:2px solid #ddd;border-radius:9px;font-family:'Cairo',sans-serif">
+      <input type="password" id="lgPass" placeholder="كلمة المرور" style="width:100%;padding:11px;margin-bottom:11px;border:2px solid #ddd;border-radius:9px;font-family:'Cairo',sans-serif">
+      <button class="btn btn-p" style="width:100%" onclick="doLogin()">دخول</button>
     </div>
   </div>
-
-  <!-- المسارات -->
-  <div style="max-width:1100px; margin: 0 auto 1.5rem; padding: 0 0 0.5rem;">
-    <h3 style="font-family:'Amiri',serif; font-size:1.4rem; color:var(--gold);">🗺️ أبرز المسارات المتاحة</h3>
-  </div>
-  <div class="routes-grid animate-on-scroll">
-    <div class="route-card">
-      <div class="route-icon">🏘️</div>
-      <div class="route-info">
-        <div class="route-from-to">حجاج <span class="route-arrow">⟵</span> مستغانم</div>
-        <div class="route-type">داخل الولاية</div>
-      </div>
-      <div class="route-badge">يومي</div>
-    </div>
-    <div class="route-card">
-      <div class="route-icon">🌊</div>
-      <div class="route-info">
-        <div class="route-from-to">حجاج <span class="route-arrow">⟵</span> مستغانم — الشاطئ</div>
-        <div class="route-type">رحلات ترفيهية</div>
-      </div>
-      <div class="route-badge">صيفي</div>
-    </div>
-    <div class="route-card">
-      <div class="route-icon">🏙️</div>
-      <div class="route-info">
-        <div class="route-from-to">مستغانم <span class="route-arrow">⟵</span> وهران</div>
-        <div class="route-type">خارج الولاية</div>
-      </div>
-      <div class="route-badge">يومي</div>
-    </div>
-    <div class="route-card">
-      <div class="route-icon">✈️</div>
-      <div class="route-info">
-        <div class="route-from-to">مستغانم <span class="route-arrow">⟵</span> مطار وهران</div>
-        <div class="route-type">نقل مطاري</div>
-      </div>
-      <div class="route-badge">حجز مسبق</div>
-    </div>
-    <div class="route-card">
-      <div class="route-icon">🏛️</div>
-      <div class="route-info">
-        <div class="route-from-to">مستغانم <span class="route-arrow">⟵</span> الجزائر العاصمة</div>
-        <div class="route-type">خارج الولاية</div>
-      </div>
-      <div class="route-badge">على الطلب</div>
-    </div>
-    <div class="route-card">
-      <div class="route-icon">🕌</div>
-      <div class="route-info">
-        <div class="route-from-to">مستغانم <span class="route-arrow">⟵</span> تلمسان / سيدي بلعباس</div>
-        <div class="route-type">خارج الولاية</div>
-      </div>
-      <div class="route-badge">على الطلب</div>
-    </div>
-    <div class="route-card">
-      <div class="route-icon">🎓</div>
-      <div class="route-info">
-        <div class="route-from-to">نقل مدرسي وجامعي</div>
-        <div class="route-type">داخل مستغانم وضواحيها</div>
-      </div>
-      <div class="route-badge">موسمي</div>
-    </div>
-    
-    </div>
-  </div>
-
-  <!-- دعوة لاتخاذ إجراء -->
-  <div class="transport-cta animate-on-scroll">
-    <div class="transport-cta-text">
-      <h3>🚐 احجز رحلتك الآن</h3>
-      <p>تواصل معنا مباشرة لحجز نقلك — نصل إليك في أقرب وقت</p>
-    </div>
-    <div class="transport-cta-btns">
-      <a href="tel:+213672021427" class="btn-primary" style="text-decoration:none;">📞 +213 672 02 14 27</a>
-      <a href="https://wa.me/213672021427" class="btn-outline" style="text-decoration:none;" target="_blank">💬 واتساب</a>
-    </div>
-  </div>
-</section>
-
-<!-- الخريطة ومعلومات الاتصال -->
-<section id="map-section">
-  <div class="section-header animate-on-scroll">
-    <span class="section-label">تواصل معنا</span>
-    <div class="divider"></div>
-    <h2 class="section-title">موقعنا وبياناتنا</h2>
-    <p class="section-desc">بلدية حجاج — ولاية مستغانم، الجزائر</p>
-  </div>
-  <div class="map-container animate-on-scroll">
-    <div class="map-wrapper">
-      <!-- تحديث الإحداثيات لتقترب من حجاج -->
-      <iframe
-        src="https://www.openstreetmap.org/export/embed.html?bbox=0.3200%2C36.0800%2C0.3400%2C36.1100&layer=mapnik&marker=36.0952%2C0.3289"
-        allowfullscreen
-        loading="lazy"
-        title="موقع الوكالة — حجاج، مستغانم">
-      </iframe>
-      <div class="map-overlay-badge">📍 بلدية حجاج — ولاية مستغانم</div>
-    </div>
-    <div class="contact-info-card">
-      <div class="section-header" style="text-align:right; margin-bottom:0.5rem;">
-        <h3 style="font-family:'Amiri',serif; font-size:1.5rem;">بيانات الاتصال</h3>
-      </div>
-      <a href="tel:+213672021427" class="contact-item">
-        <div class="contact-icon">📞</div>
-        <div>
-          <div class="contact-detail-label">الهاتف</div>
-          <div class="contact-detail-value" style="direction:ltr; text-align:right;">+213 672 02 14 27</div>
-        </div>
-      </a>
-      <a href="mailto:benomans@gmail.com" class="contact-item">
-        <div class="contact-icon">📧</div>
-        <div>
-          <div class="contact-detail-label">البريد الإلكتروني</div>
-          <div class="contact-detail-value">benomans@gmail.com</div>
-        </div>
-      </a>
-      <a href="https://wa.me/213672021427" class="contact-item" target="_blank">
-        <div class="contact-icon">💬</div>
-        <div>
-          <div class="contact-detail-label">واتساب</div>
-          <div class="contact-detail-value" style="direction:ltr; text-align:right;">+213 672 02 14 27</div>
-        </div>
-      </a>
-      <div class="contact-item">
-        <div class="contact-icon">🕐</div>
-        <div>
-          <div class="contact-detail-label">ساعات العمل</div>
-          <div class="contact-detail-value">جميع الأيام</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">📍</div>
-        <div>
-          <div class="contact-detail-label">العنوان</div>
-          <div class="contact-detail-value">بلدية حجاج، ولاية مستغانم</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- آراء العملاء -->
-
-<!-- نموذج الاتصال (يعمل عبر Formspree) -->
-<section id="contact">
-  <div class="section-header animate-on-scroll">
-    <span class="section-label">استفساراتك</span>
-    <div class="divider"></div>
-    <h2 class="section-title">أرسل لنا رسالة</h2>
-    <p class="section-desc">سنرد عليك في أقرب وقت ممكن</p>
-  </div>
-  <div class="contact-wrapper animate-on-scroll">
-    <!-- استبدل الرابط أدناه بالرابط الخاص بك من Formspree -->
-    <form action="https://formspree.io/f/your-form-id" method="POST">
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="f-name">الاسم الكامل *</label>
-          <input type="text" name="الاسم" id="f-name" placeholder="أدخل اسمك الكامل" required>
-        </div>
-        <div class="form-group">
-          <label for="f-phone">رقم الهاتف *</label>
-          <input type="tel" name="الهاتف" id="f-phone" placeholder="06xxxxxxxx" required>
-        </div>
-        <div class="form-group">
-          <label for="f-email">البريد الإلكتروني</label>
-          <input type="email" name="البريد" id="f-email" placeholder="example@email.com">
-        </div>
-        <div class="form-group">
-          <label for="f-service">نوع الخدمة المطلوبة</label>
-          <select name="الخدمة" id="f-service">
-            <option value="">-- اختر الخدمة --</option>
-            <option>حجز موعد خاص</option>
-            <option>حجز موعد للنقل</option>
-          >
-          </select>
-        </div>
-        <div class="form-group full">
-          <label for="f-msg">رسالتك</label>
-          <textarea name="الرسالة" id="f-msg" placeholder="اكتب تفاصيل طلبك هنا..." required></textarea>
-        </div>
-      </div>
-      <button type="submit" class="btn-submit">📨 إرسال الرسالة</button>
-    </form>
-  </div>
-</section>
-
-<!-- التذييل (تم تحديث الروابط) -->
-<footer>
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <div class="nav-logo">
-        <div class="nav-logo-icon">✈️</div>
-        <div>
-          <div class="nav-logo-text">منصور بن نونة للنقل</div>
-        </div>
-      </div>
-      <p>خدمات النقل داخل وخارج ولاية مستغانم. مقرنا بلدية حجاج.</p>
-    </div>
-    <div>
-      <div class="footer-title">روابط سريعة</div>
-      <ul class="footer-links">
-        <li><a href="#transport">خدمة النقل</a></li>
-        <li><a href="#testimonials">آراء العملاء</a></li>
-        <li><a href="#map-section">موقعنا</a></li>
-        <li><a href="#contact">تواصل معنا</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-title">خدمات النقل</div>
-      <ul class="footer-links">
-        <li><a href="#">🚌 نقل داخل مستغانم</a></li>
-        <li><a href="#">🛣️ نقل خارج الولاية</a></li>
-        <li><a href="#">✈️ نقل مطاري</a></li>
-        <li><a href="#">👨‍👩‍👧 رحلات عائلية</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-title">تواصل معنا</div>
-      <ul class="footer-links">
-        <li><a href="tel:+213672021427">📞 +213 672 02 14 27</a></li>
-        <li><a href="mailto:benomans@gmail.com">📧 benomans@gmail.com</a></li>
-        <li><a href="https://wa.me/213672021427">💬 واتساب</a></li>
-        <li><a href="#">📍 بلدية حجاج، مستغانم</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2026 <span>منصور بن نونة للنقل</span> — جميع الحقوق محفوظة</p>
-  </div>
-</footer>
-
+</div>
 <script>
-  // تفعيل تأثير الظهور عند التمرير
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-  // وظيفة التبويبات في قسم البحث
-  const tabs = document.querySelectorAll('.tab');
-  const searchContent = document.querySelector('.search-content');
-
-  // محتوى كل تبويب (نماذج مختلفة)
-  const tabContents = {
-   air: `
-      <div class="search-grid">
-        <div class="search-field"><label>🚐 نوع النقل</label><select><option>سيارة خاصة</option><option>حافلة صغيرة</option><option>حافلة كبيرة</option></select></div>
-        <div class="search-field"><label>📍 من</label><input type="text" value="حجاج" placeholder="بلدية حجاج"></div>
-        <div class="search-field"><label>📍 إلى</label><input type="text" placeholder="الوجهة"></div>
-        <div class="search-field"><label>📅 التاريخ</label><input type="date"></div>
-        <div class="search-field"><label> </label><a href="https://wa.me/213672021427?text=أرغب%20في%20حجز%20نقل" class="btn-search" style="text-align: center; text-decoration: none;">🔍 احجز نقل</a></div>
-      </div>  
-    `,
-    pkg: `
-      <div class="search-grid">
-        <div class="search-field"><label>🌍 الوجهة</label><select><option>إسطنبول</option><option>دبي</option><option>باريس</option><option>روما</option><option>القاهرة</option></select></div>
-        <div class="search-field"><label>📅 مدة الرحلة</label><select><option>3 أيام</option><option>5 أيام</option><option>7 أيام</option><option>10 أيام</option></select></div>
-        <div class="search-field"><label>👥 عدد الأشخاص</label><select><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
-        <div class="search-field"><label>⭐ مستوى الفندق</label><select><option>3 نجوم</option><option>4 نجوم</option><option>5 نجوم</option></select></div>
-        <div class="search-field"><label> </label><a href="https://wa.me/213672021427?text=أرغب%20في%20الاستفسار%20عن%20باقة%20سياحية" class="btn-search" style="text-align: center; text-decoration: none;">🔍 ابحث عن باقة</a></div>
-      </div>
-    `,
-    transport: `
-    <div class="search-grid">
-        <div class="search-field"><label>🚐 نوع النقل</label><select><option>سيارة خاصة</option><option>حافلة صغيرة</option><option>حافلة كبيرة</option></select></div>
-        <div class="search-field"><label>📍 من</label><input type="text" value="حجاج" placeholder="بلدية حجاج"></div>
-        <div class="search-field"><label>📍 إلى</label><input type="text" placeholder="الوجهة"></div>
-        <div class="search-field"><label>📅 التاريخ</label><input type="date"></div>
-        <div class="search-field"><label> </label><a href="https://wa.me/213672021427?text=أرغب%20في%20حجز%20نقل" class="btn-search" style="text-align: center; text-decoration: none;">🔍 احجز نقل</a></div>
-      </div>  
-    `,
-    umrah: `
-      
-    `
+var JBKEY=(function(){try{return localStorage.getItem('_jbk')||'';}catch(e){return '';}})();
+var JBBIN=(function(){try{return localStorage.getItem('_jbb')||'';}catch(e){return '';}})();
+var DB={};
+function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function getDefault(k){
+  var d={
+    settings:{icon:'🏛️',title:'بلدية حجاج',sub:'ولاية مستغانم',pop:18000,email:'mairie.hajjaj@mostaganem.dz',emg:'1548',phone:'045 xx xx xx',logo:''},
+    alert:{show:true,icon:'🚨',text:'تنبيه هام: حالة الطوارئ - يرجى الاتصال بالرقم 1548'},
+    ticker:[{id:'t1',icon:'📢',text:'مواعيد جديدة لاستلام الوثائق'},{id:'t2',icon:'🏛️',text:'خدمات البلدية متاحة طوال أيام الأسبوع'}],
+    faq:[{id:'f1',q:'كيف يمكنني طلب شهادة ميلاد؟',a:'من مصلحة الحالة المدنية مع بطاقة التعريف'},{id:'f2',q:'ما هي وثائق رخصة البناء؟',a:'عقد الملكية ومخطط معماري وشهادة التعمير'}],
+    articles:[{id:'a1',title:'اطلاق خدمة جديدة',body:'يسعد بلدية حجاج الاعلان عن خدمة إدارية جديدة.',cat:'اداري',svc:'s1',date:'2026-03-10',status:'published',img:''},{id:'a2',title:'حملة تشجير',body:'ضمن مبادرة البلدية للتحضر الاخضر تم غرس عدد من الاشجار.',cat:'بيئة',svc:'s2',date:'2026-03-08',status:'published',img:''}],
+    services:[{id:'s1',name:'المصلحة الادارية',cat:'اداري',desc:'شهادات الميلاد والاقامة'},{id:'s2',name:'مصلحة التعمير',cat:'اشغال',desc:'رخص البناء والمطابقة'},{id:'s3',name:'الشؤون الاجتماعية',cat:'اجتماعي',desc:'الاعانات والدعم'}],
+    council:[{id:'c1',name:'احمد بن علي',role:'رئيس المجلس',party:'مستقل',img:''}],
+    forms:[{id:'fm1',title:'طلب شهادة ميلاد',cat:'الحالة المدنية',desc:'نموذج طلب شهادة الميلاد',file:''}],
+    gallery:[],events:[{id:'e1',title:'يوم النظافة البلدي',date:'2026-03-25',time:'08:00',loc:'جميع الاحياء',desc:'حملة تنظيف شاملة'}],
+    visitors:{count:32841,last:''}
   };
-
-  // تعيين المحتوى الافتراضي (التبويب الأول)
-  searchContent.innerHTML = tabContents.air;
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-      tabs.forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      this.classList.add('active');
-      this.setAttribute('aria-selected', 'true');
-
-      const tabId = this.id.replace('tab-', '');
-      searchContent.innerHTML = tabContents[tabId];
-    });
+  return d[k]!==undefined?d[k]:null;
+}
+function dbLoad(){
+  ['settings','alert','ticker','faq','articles','services','council','forms','gallery','events','visitors'].forEach(function(k){
+    var v=lsGet('hj_'+k);
+    DB[k]=v!==null?v:getDefault(k);
   });
+}
+var _saveTimer=null;
+function dbSave(k){lsSet('hj_'+k,DB[k]);clearTimeout(_saveTimer);_saveTimer=setTimeout(pushCloud,1500);}
+function stripImgs(v){if(!v||typeof v!=='object')return v;if(Array.isArray(v))return v.map(stripImgs);var r={};Object.keys(v).forEach(function(k){if(typeof v[k]==='string'&&v[k].startsWith('data:')&&v[k].length>8000)r[k]='';else r[k]=stripImgs(v[k]);});return r;}
+function mergeImgs(cloud,local){if(!local||typeof cloud!=='object')return cloud;if(Array.isArray(cloud)&&Array.isArray(local)){return cloud.map(function(item){if(!item||!item.id)return item;var li=local.find(function(l){return l&&l.id===item.id;});return li?mergeImgs(item,li):item;});}var r=Object.assign({},cloud);Object.keys(r).forEach(function(k){if((r[k]===''||r[k]===null)&&local[k]&&typeof local[k]==='string'&&local[k].startsWith('data:'))r[k]=local[k];else if(r[k]&&typeof r[k]==='object')r[k]=mergeImgs(r[k],local[k]||{});});return r;}
+function pushCloud(){if(!JBKEY||!JBBIN)return;var payload={};['settings','alert','ticker','faq','articles','services','council','forms','gallery','events'].forEach(function(k){if(DB[k])payload['hj_'+k]=stripImgs(DB[k]);});fetch('https://api.jsonbin.io/v3/b/'+JBBIN,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JBKEY},body:JSON.stringify(payload)}).catch(function(e){console.warn(e);});}
+function pullCloud(silent){if(!JBKEY||!JBBIN){if(!silent)showToast('ادخل بيانات JSONBin اولاً','er');return;}if(!silent)showToast('جارٍ التحديث...','inf');fetch('https://api.jsonbin.io/v3/b/'+JBBIN+'/latest',{headers:{'X-Master-Key':JBKEY,'X-Bin-Meta':'false'}}).then(function(r){return r.json();}).then(function(json){var data=json.record||json;var changed=false;Object.keys(data).forEach(function(k){if(k.startsWith('hj_')&&data[k]!==null){var key=k.slice(3);var local=lsGet(k);var merged=mergeImgs(data[k],local||{});DB[key]=merged;lsSet(k,merged);changed=true;}});if(changed)renderAll();if(!silent)showToast('تم التحديث','ok');}).catch(function(e){if(!silent)showToast('خطأ في الاتصال','er');console.warn(e);});}
+function syncNow(){pullCloud(false);}
+function pushAll(){pushCloud();showToast('جارٍ رفع البيانات...','inf');}
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';clearTimeout(showToast._t);showToast._t=setTimeout(function(){t.classList.remove('show');},3000);}
+function openOv(id){document.getElementById(id).classList.add('on');}
+function closeOv(id){document.getElementById(id).classList.remove('on');}
+var _clks=0,_ct=null;
+function iconClick(){_clks++;clearTimeout(_ct);_ct=setTimeout(function(){_clks=0;},2000);if(_clks>=4){_clks=0;if(!lsGet('_adm'))openOv('loginOv');else document.getElementById('abar').classList.toggle('on');}}
+function doLogin(){if(document.getElementById('lgUser').value==='admin'&&document.getElementById('lgPass').value==='hajjaj2026'){lsSet('_adm',true);closeOv('loginOv');document.getElementById('abar').classList.add('on');showToast('مرحباً - اضغط الايقونة 4 مرات للاخفاء','ok');}else showToast('بيانات خاطئة','er');}
+function doLogout(){lsSet('_adm',false);document.getElementById('abar').classList.remove('on');showToast('تم الخروج','ok');}
+var _curPg='home',_curSvc=null,_artFrom='news',_pg=1,_pp=6;
+function goPage(pg,artId,svcId){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on');});document.querySelectorAll('.nav-ul a').forEach(function(a){a.classList.remove('on');});_curPg=pg;if(pg==='article'&&artId){document.getElementById('page-article').classList.add('on');loadArt(artId);}else if(pg==='svcdetail'&&svcId){_curSvc=svcId;document.getElementById('page-svcdetail').classList.add('on');loadSvcDetail(svcId);}else{var el=document.getElementById('page-'+pg);if(el)el.classList.add('on');var nav=document.getElementById('nav-'+pg);if(nav)nav.classList.add('on');if(pg==='home')buildCarousel();}window.scrollTo({top:0,behavior:'smooth'});}
+function backFromArt(){if(_artFrom==='svcdetail'&&_curSvc)goPage('svcdetail',null,_curSvc);else goPage('news');}
+function aTab(t,btn){document.querySelectorAll('.adm-tab').forEach(function(b){b.classList.remove('on');});document.querySelectorAll('.adm-cnt').forEach(function(c){c.classList.remove('on');});btn.classList.add('on');document.getElementById('at-'+t).classList.add('on');if(t==='articles')rebuildSvcSelect();fillAdm(t);}
+function fillAdm(t){if(t==='cloud'){sv('jbKey',JBKEY);sv('jbBin',JBBIN);}if(t==='settings'){var s=DB.settings||{};sv('setIcon',s.icon||'🏛️');sv('setTitle',s.title||'بلدية حجاج');sv('setSub',s.sub||'ولاية مستغانم');sv('setPop',s.pop||18000);sv('setEmg',s.emg||'1548');sv('setEmail',s.email||'');}if(t==='alert'){var a=DB.alert||{};sv('algIcon',a.icon||'🚨');sv('algText',a.text||'');}if(t==='ticker')rTkTbl();if(t==='faq')rFaqTbl();if(t==='events')rEvTbl();if(t==='services')rSvTbl();if(t==='articles'){rArTbl();rebuildSvcSelect();}if(t==='council')rMbTbl();if(t==='forms')rFmTbl();if(t==='gallery')rGlAdm();}
+function sv(id,v){var e=document.getElementById(id);if(e)e.value=v;}
+function gv(id){var e=document.getElementById(id);return e?e.value:'';}
+function cl(id){var e=document.getElementById(id);if(e)e.value='';}
+function tx(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+function upLogo(inp){if(!inp.files||!inp.files[0])return;var r=new FileReader();r.onload=function(e){document.getElementById('logoPrev').innerHTML='<img src="'+e.target.result+'" style="max-width:85px;border-radius:7px;">';DB.settings=DB.settings||{};DB.settings.logo=e.target.result;applySettings();};r.readAsDataURL(inp.files[0]);}
+function saveSettings(){DB.settings={icon:gv('setIcon'),title:gv('setTitle'),sub:gv('setSub'),pop:parseInt(gv('setPop'))||18000,email:gv('setEmail'),emg:gv('setEmg'),phone:gv('setEmg'),logo:(DB.settings&&DB.settings.logo)||''};dbSave('settings');applySettings();showToast('تم حفظ الاعدادات','ok');}
+function applySettings(){var s=DB.settings||getDefault('settings');document.getElementById('hicon').innerHTML=s.logo?'<img src="'+s.logo+'" alt="شعار">':s.icon;tx('siteTitle',s.title);tx('siteSub',s.sub);tx('popCount','+'+(parseInt(s.pop)||18000).toLocaleString());tx('footTitle',s.title);tx('footEmail',s.email);tx('footEmg',s.emg);tx('footCopy',s.title+' - ولاية مستغانم');tx('ctPhone',s.phone||'045 xx xx xx');tx('ctEmg',s.emg);tx('ctPhone2',s.phone||'045 xx xx xx');tx('ctEmg2',s.emg);tx('ctEmail',s.email);}
+function saveCloudCfg(){var k=gv('jbKey').trim(),b=gv('jbBin').trim();if(!k||!b){showToast('ادخل المفتاح والـ ID','er');return;}JBKEY=k;JBBIN=b;try{localStorage.setItem('_jbk',k);localStorage.setItem('_jbb',b);}catch(e){}showToast('تم الحفظ - جارٍ المزامنة...','ok');setTimeout(function(){pullCloud(true);},500);}
+function dimAlert(){document.getElementById('alertBar').classList.add('hide');}
+function showAlertBar(){document.getElementById('alertBar').classList.remove('hide');}
+function hideAlertBar(){DB.alert=DB.alert||{};DB.alert.show=false;dbSave('alert');document.getElementById('alertBar').classList.add('hide');showToast('تم اخفاء التنبيه','ok');}
+function saveAlert(){DB.alert={show:true,icon:gv('algIcon'),text:gv('algText')};dbSave('alert');document.getElementById('alertBar').classList.remove('hide');document.getElementById('alertIcon').textContent=DB.alert.icon;document.getElementById('alertText').textContent=DB.alert.text;showToast('تم حفظ التنبيه','ok');}
+function applyAlert(){var a=DB.alert||getDefault('alert');if(a.show){document.getElementById('alertBar').classList.remove('hide');document.getElementById('alertIcon').textContent=a.icon;document.getElementById('alertText').textContent=a.text;}else document.getElementById('alertBar').classList.add('hide');}
+function addTicker(){var icon=gv('tkIcon'),text=gv('tkText');if(!text){showToast('ادخل النص','er');return;}DB.ticker=DB.ticker||[];DB.ticker.push({id:'t'+Date.now(),icon:icon,text:text});dbSave('ticker');renderTicker();rTkTbl();cl('tkText');showToast('تمت الاضافة','ok');}
+function delTicker(id){DB.ticker=(DB.ticker||[]).filter(function(t){return t.id!==id;});dbSave('ticker');renderTicker();rTkTbl();showToast('تم الحذف','ok');}
+function renderTicker(){var items=DB.ticker||[];var html=items.map(function(t){return '<span style="padding:0 22px">'+t.icon+' '+t.text+'</span>';}).join('');document.getElementById('tkr1').innerHTML=html;document.getElementById('tkr2').innerHTML=html;}
+function rTkTbl(){document.getElementById('tkTbl').innerHTML=(DB.ticker||[]).map(function(t){return '<tr><td>'+t.icon+'</td><td>'+t.text+'</td><td><button class="btn btn-d btn-sm" onclick="delTicker(\''+t.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="3" style="text-align:center;color:#999">لا توجد عناصر</td></tr>';}
+function saveFaq(){var id=gv('faqEId')||'f'+Date.now();var q=gv('faqQ'),a=gv('faqA');if(!q||!a){showToast('املأ الحقول','er');return;}DB.faq=DB.faq||[];var idx=DB.faq.findIndex(function(f){return f.id===id;});if(idx>=0)DB.faq[idx]={id:id,q:q,a:a};else DB.faq.push({id:id,q:q,a:a});dbSave('faq');renderFaq();rFaqTbl();clrFaq();showToast('تم الحفظ','ok');}
+function edFaq(id){var f=(DB.faq||[]).find(function(x){return x.id===id;});if(!f)return;sv('faqEId',f.id);sv('faqQ',f.q);sv('faqA',f.a);}
+function delFaq(id){DB.faq=(DB.faq||[]).filter(function(f){return f.id!==id;});dbSave('faq');renderFaq();rFaqTbl();showToast('تم الحذف','ok');}
+function clrFaq(){cl('faqEId');cl('faqQ');cl('faqA');}
+function rFaqTbl(){document.getElementById('faqTbl').innerHTML=(DB.faq||[]).map(function(f){return '<tr><td>'+f.q+'</td><td>'+f.a.substring(0,40)+'...</td><td><button class="btn btn-w btn-sm" onclick="edFaq(\''+f.id+'\')">&#x270F;&#xFE0F;</button> <button class="btn btn-d btn-sm" onclick="delFaq(\''+f.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="3" style="text-align:center;color:#999">لا توجد اسئلة</td></tr>';}
+function renderFaq(){document.getElementById('faqList').innerHTML=(DB.faq||[]).map(function(f){return '<div class="faq-i"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'on\')">'+f.q+'</div><div class="faq-a"><p>'+f.a+'</p></div></div>';}).join('');}
+function saveEvent(){var id=gv('evEId')||'e'+Date.now();var title=gv('evTitle'),date=gv('evDate');if(!title||!date){showToast('ادخل العنوان والتاريخ','er');return;}var ev={id:id,title:title,date:date,time:gv('evTime'),loc:gv('evLoc'),desc:gv('evDesc')};DB.events=DB.events||[];var idx=DB.events.findIndex(function(e){return e.id===id;});if(idx>=0)DB.events[idx]=ev;else DB.events.push(ev);dbSave('events');renderEvents();rEvTbl();clrEv();showToast('تم الحفظ','ok');}
+function edEv(id){var e=(DB.events||[]).find(function(x){return x.id===id;});if(!e)return;sv('evEId',e.id);sv('evTitle',e.title);sv('evDate',e.date);sv('evTime',e.time||'');sv('evLoc',e.loc||'');sv('evDesc',e.desc||'');}
+function delEv(id){DB.events=(DB.events||[]).filter(function(e){return e.id!==id;});dbSave('events');renderEvents();rEvTbl();showToast('تم الحذف','ok');}
+function clrEv(){['evEId','evTitle','evDate','evTime','evLoc','evDesc'].forEach(cl);}
+function rEvTbl(){document.getElementById('evTbl').innerHTML=(DB.events||[]).map(function(e){return '<tr><td>'+e.title+'</td><td>'+e.date+'</td><td>'+(e.time||'-')+'</td><td><button class="btn btn-w btn-sm" onclick="edEv(\''+e.id+'\')">&#x270F;&#xFE0F;</button> <button class="btn btn-d btn-sm" onclick="delEv(\''+e.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="4" style="text-align:center;color:#999">لا توجد فعاليات</td></tr>';}
+function renderEvents(){document.getElementById('evList').innerHTML=(DB.events||[]).map(function(e){var p=e.date.split('-');return '<div class="ev-i"><div class="ev-dt"><div class="ev-day">'+(p[2]||'')+'</div><div class="ev-mo">'+(p[1]||'')+'</div></div><div><div class="ev-ti">'+e.title+'</div><div class="ev-tm">'+( e.time||'كل اليوم')+' - '+(e.loc||'-')+'</div>'+(e.desc?'<p style="font-size:12px;color:#666;margin-top:4px">'+e.desc+'</p>':'')+'</div></div>';}).join('');}
+function saveSvc(){var id=gv('svEId')||'s'+Date.now();var name=gv('svName');if(!name){showToast('ادخل الاسم','er');return;}var svc={id:id,name:name,cat:gv('svCat'),desc:gv('svDesc')};DB.services=DB.services||[];var idx=DB.services.findIndex(function(s){return s.id===id;});if(idx>=0)DB.services[idx]=svc;else DB.services.push(svc);dbSave('services');renderServices();rSvTbl();rebuildSvcSelect();clrSvc();showToast('تم الحفظ','ok');}
+function edSvc(id){var s=(DB.services||[]).find(function(x){return x.id===id;});if(!s)return;sv('svEId',s.id);sv('svName',s.name);sv('svCat',s.cat);sv('svDesc',s.desc);}
+function delSvc(id){DB.services=(DB.services||[]).filter(function(s){return s.id!==id;});dbSave('services');renderServices();rSvTbl();rebuildSvcSelect();showToast('تم الحذف','ok');}
+function clrSvc(){['svEId','svName','svDesc'].forEach(cl);}
+function rSvTbl(){document.getElementById('svTbl').innerHTML=(DB.services||[]).map(function(s){return '<tr><td>'+s.name+'</td><td>'+s.cat+'</td><td><button class="btn btn-w btn-sm" onclick="edSvc(\''+s.id+'\')">&#x270F;&#xFE0F;</button> <button class="btn btn-d btn-sm" onclick="delSvc(\''+s.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="3" style="text-align:center;color:#999">لا توجد مصالح</td></tr>';}
+function renderServices(){document.getElementById('svcGrid').innerHTML=(DB.services||[]).map(function(s){return '<div class="scard" onclick="goPage(\'svcdetail\',null,\''+s.id+'\')"><div class="scard-ico">&#x1F3DB;&#xFE0F;</div><div class="scard-nm">'+s.name+'</div><span class="scard-tag">'+s.cat+'</span></div>';}).join('');tx('svcCount',(DB.services||[]).length);}
+function rebuildSvcSelect(){var sel=document.getElementById('arSvc');if(!sel)return;sel.innerHTML='<option value="">بدون ارتباط</option>'+(DB.services||[]).map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');}
+function loadSvcDetail(id){var svc=(DB.services||[]).find(function(s){return s.id===id;});if(!svc){goPage('services');return;}tx('svcName',svc.name);tx('svcDesc',svc.desc||'');var arts=(DB.articles||[]).filter(function(a){return a.status==='published'&&a.svc===id;});document.getElementById('newsSvc').innerHTML=nHtml(arts.slice(0,_pp),'svcdetail');_artFrom='svcdetail';}
+function saveArt(){var id=gv('arEId')||'a'+Date.now();var title=gv('arTitle'),body=gv('arBody');if(!title||!body){showToast('ادخل العنوان والمحتوى','er');return;}DB.articles=DB.articles||[];var idx=DB.articles.findIndex(function(a){return a.id===id;});var existing=idx>=0?DB.articles[idx]:{};var doSave=function(img){var art={id:id,title:title,body:body,cat:gv('arCat'),svc:gv('arSvc'),status:gv('arSt'),date:new Date().toISOString().split('T')[0],img:img};if(idx>=0)DB.articles[idx]=art;else DB.articles.unshift(art);dbSave('articles');renderNews();rArTbl();clrArt();showToast('تم الحفظ','ok');};var ii=document.getElementById('arImg');if(ii&&ii.files&&ii.files[0]){var rr=new FileReader();rr.onload=function(e){doSave(e.target.result);};rr.readAsDataURL(ii.files[0]);}else doSave(existing.img||'');}
+function edArt(id){var a=(DB.articles||[]).find(function(x){return x.id===id;});if(!a)return;sv('arEId',a.id);sv('arTitle',a.title);sv('arCat',a.cat);sv('arSvc',a.svc||'');sv('arBody',a.body);sv('arSt',a.status);}
+function delArt(id){DB.articles=(DB.articles||[]).filter(function(a){return a.id!==id;});dbSave('articles');renderNews();rArTbl();showToast('تم الحذف','ok');}
+function clrArt(){['arEId','arTitle','arBody'].forEach(cl);var i=document.getElementById('arImg');if(i)i.value='';document.getElementById('arImgPrev').innerHTML='';}
+function rArTbl(){var arts=DB.articles||[];var svcs=DB.services||[];document.getElementById('arTbl').innerHTML=arts.map(function(a){var sv=svcs.find(function(s){return s.id===a.svc;});return '<tr><td>'+a.title+'</td><td>'+(sv?sv.name:'-')+'</td><td>'+a.date+'</td><td><button class="btn btn-w btn-sm" onclick="edArt(\''+a.id+'\')">&#x270F;&#xFE0F;</button> <button class="btn btn-d btn-sm" onclick="delArt(\''+a.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="4" style="text-align:center;color:#999">لا توجد اخبار</td></tr>';}
+function nHtml(arts,from){var svcs=DB.services||[];return arts.map(function(a){var sv=svcs.find(function(s){return s.id===a.svc;});return '<article class="ni"><div class="ni-img">'+(a.img?'<img src="'+a.img+'">':'')+'</div><div class="ni-body"><div class="ni-meta"><span class="ni-cat">'+a.cat+'</span><span>'+a.date+'</span>'+(sv?'<span>'+sv.name+'</span>':'')+'</div><h3 class="ni-title">'+a.title+'</h3><p class="ni-exc">'+a.body+'</p><button class="rm-btn" onclick="oArt(\''+a.id+'\',\''+from+'\')">اقرأ المزيد</button></div></article>';}).join('')||'<p style="color:#999;text-align:center;padding:30px;grid-column:1/-1">لا توجد اخبار</p>';}
+function oArt(id,from){_artFrom=from||'news';goPage('article',id);}
+function renderNews(){var arts=(DB.articles||[]).filter(function(a){return a.status==='published';});var paged=arts.slice((_pg-1)*_pp,_pg*_pp);var html=nHtml(paged,'news');document.getElementById('newsHome').innerHTML=html;document.getElementById('newsFull').innerHTML=html;var total=arts.length,pages=Math.ceil(total/_pp);var ph=pages>1?'<button onclick="chPg(-1)" '+(_pg===1?'disabled':'')+'>السابق</button><span>'+_pg+' / '+pages+'</span><button onclick="chPg(1)" '+(_pg===pages?'disabled':'')+'>التالي</button>':'';document.getElementById('pagHome').innerHTML=ph;document.getElementById('pagFull').innerHTML=ph;}
+function chPg(d){var arts=(DB.articles||[]).filter(function(a){return a.status==='published';});var pages=Math.ceil(arts.length/_pp);_pg=Math.max(1,Math.min(pages,_pg+d));renderNews();}
+function loadArt(id){var a=(DB.articles||[]).find(function(x){return x.id===id;});if(!a){goPage('news');return;}var sv=(DB.services||[]).find(function(s){return s.id===a.svc;});document.getElementById('artContent').innerHTML=(a.img?'<img src="'+a.img+'" class="art-img">':'')+'<div class="art-cnt"><div class="art-hd"><h1 class="art-ttl">'+a.title+'</h1><div class="art-meta"><span>'+a.cat+'</span><span>'+a.date+'</span>'+(sv?'<span>'+sv.name+'</span>':'')+'</div></div><div class="art-body">'+a.body.split('\n').map(function(p){return'<p>'+p+'</p>';}).join('')+'</div></div>';}
+function saveMb(){var id=gv('mbEId')||'c'+Date.now();var name=gv('mbName'),role=gv('mbRole');if(!name||!role){showToast('ادخل الاسم والمنصب','er');return;}DB.council=DB.council||[];var idx=DB.council.findIndex(function(m){return m.id===id;});var doSave=function(img){var mb={id:id,name:name,role:role,party:gv('mbParty'),img:img};if(idx>=0)DB.council[idx]=mb;else DB.council.push(mb);dbSave('council');renderCouncil();rMbTbl();clrMb();showToast('تم الحفظ','ok');};var ii=document.getElementById('mbImg');if(ii&&ii.files&&ii.files[0]){var rr=new FileReader();rr.onload=function(e){doSave(e.target.result);};rr.readAsDataURL(ii.files[0]);}else doSave((idx>=0?DB.council[idx].img:'')||'');}
+function edMb(id){var m=(DB.council||[]).find(function(x){return x.id===id;});if(!m)return;sv('mbEId',m.id);sv('mbName',m.name);sv('mbRole',m.role);sv('mbParty',m.party||'');}
+function delMb(id){DB.council=(DB.council||[]).filter(function(m){return m.id!==id;});dbSave('council');renderCouncil();rMbTbl();showToast('تم الحذف','ok');}
+function clrMb(){['mbEId','mbName','mbRole','mbParty'].forEach(cl);var i=document.getElementById('mbImg');if(i)i.value='';document.getElementById('mbImgPrev').innerHTML='';}
+function rMbTbl(){document.getElementById('mbTbl').innerHTML=(DB.council||[]).map(function(m){return '<tr><td>'+(m.img?'<img src="'+m.img+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover">':'&#x1F464;')+'</td><td>'+m.name+'</td><td>'+m.role+'</td><td><button class="btn btn-w btn-sm" onclick="edMb(\''+m.id+'\')">&#x270F;&#xFE0F;</button> <button class="btn btn-d btn-sm" onclick="delMb(\''+m.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="4" style="text-align:center;color:#999">لا يوجد اعضاء</td></tr>';}
+function renderCouncil(){document.getElementById('councilGrid').innerHTML=(DB.council||[]).map(function(m){return '<div class="scard"><div class="scard-ico">'+(m.img?'<img src="'+m.img+'" style="width:58px;height:58px;border-radius:50%;object-fit:cover">':'&#x1F464;')+'</div><div class="scard-nm">'+m.name+'</div><span class="scard-tag">'+m.role+'</span></div>';}).join('');}
+function saveFm(){var id=gv('fmEId')||'fm'+Date.now();var title=gv('fmTitle');if(!title){showToast('ادخل العنوان','er');return;}DB.forms=DB.forms||[];var idx=DB.forms.findIndex(function(f){return f.id===id;});var doSave=function(file){var fm={id:id,title:title,cat:gv('fmCat'),desc:gv('fmDesc'),file:file};if(idx>=0)DB.forms[idx]=fm;else DB.forms.push(fm);dbSave('forms');renderForms();rFmTbl();clrFm();showToast('تم الحفظ','ok');};var fi=document.getElementById('fmFile');if(fi&&fi.files&&fi.files[0]){var rr=new FileReader();rr.onload=function(e){doSave(e.target.result);};rr.readAsDataURL(fi.files[0]);}else doSave((idx>=0?DB.forms[idx].file:'')||'');}
+function edFm(id){var f=(DB.forms||[]).find(function(x){return x.id===id;});if(!f)return;sv('fmEId',f.id);sv('fmTitle',f.title);sv('fmCat',f.cat);sv('fmDesc',f.desc||'');}
+function delFm(id){DB.forms=(DB.forms||[]).filter(function(f){return f.id!==id;});dbSave('forms');renderForms();rFmTbl();showToast('تم الحذف','ok');}
+function clrFm(){['fmEId','fmTitle','fmDesc'].forEach(cl);var i=document.getElementById('fmFile');if(i)i.value='';document.getElementById('fmFilePrev').innerHTML='';}
+function rFmTbl(){document.getElementById('fmTbl').innerHTML=(DB.forms||[]).map(function(f){return '<tr><td>'+f.title+'</td><td>'+f.cat+'</td><td>'+(f.file?'ملف':'-')+'</td><td><button class="btn btn-w btn-sm" onclick="edFm(\''+f.id+'\')">&#x270F;&#xFE0F;</button> <button class="btn btn-d btn-sm" onclick="delFm(\''+f.id+'\')">&#x1F5D1;&#xFE0F;</button></td></tr>';}).join('')||'<tr><td colspan="4" style="text-align:center;color:#999">لا توجد استمارات</td></tr>';}
+function renderForms(){document.getElementById('fmGrid').innerHTML=(DB.forms||[]).map(function(f){return '<div class="scard"><div class="scard-ico">&#x1F4C4;</div><div class="scard-nm">'+f.title+'</div><span class="scard-tag">'+f.cat+'</span>'+(f.file?'<button class="btn btn-p btn-sm" style="margin-top:8px" onclick="dlFm(\''+f.id+'\')">تحميل</button>':'')+'</div>';}).join('');}
+function dlFm(id){var f=(DB.forms||[]).find(function(x){return x.id===id;});if(!f||!f.file){showToast('لا يوجد ملف','er');return;}var a=document.createElement('a');a.href=f.file;a.download=f.title+'.pdf';a.click();}
+function saveGl(){var ii=document.getElementById('glImg');if(!ii||!ii.files||!ii.files[0]){showToast('اختر صورة','er');return;}var rr=new FileReader();rr.onload=function(e){DB.gallery=DB.gallery||[];DB.gallery.push({id:'g'+Date.now(),title:gv('glTitle'),img:e.target.result});dbSave('gallery');renderGallery();rGlAdm();cl('glTitle');ii.value='';document.getElementById('glImgPrev').innerHTML='';showToast('تم الحفظ','ok');};rr.readAsDataURL(ii.files[0]);}
+function delGl(id){DB.gallery=(DB.gallery||[]).filter(function(g){return g.id!==id;});dbSave('gallery');renderGallery();rGlAdm();buildCarousel();showToast('تم الحذف','ok');}
+function rGlAdm(){document.getElementById('glAdmGrid').innerHTML=(DB.gallery||[]).map(function(g){return '<div class="gi" style="position:relative"><img src="'+g.img+'"><button class="btn btn-d btn-sm" style="position:absolute;top:4px;left:4px" onclick="delGl(\''+g.id+'\')">&#x1F5D1;&#xFE0F;</button></div>';}).join('');}
+function renderGallery(){document.getElementById('glPubGrid').innerHTML=(DB.gallery||[]).map(function(g){return '<div class="gi"><img src="'+g.img+'"></div>';}).join('');}
+var _ci=0;
+function buildCarousel(){var car=document.getElementById('carousel');if(!car)return;car.querySelectorAll('.car-sl').forEach(function(s){s.remove();});var gl=DB.gallery||[];var ctrl=car.querySelector('.car-ctrl');if(!gl.length){var s=document.createElement('div');s.className='car-sl on';s.innerHTML='<div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem">&#x1F3DB;&#xFE0F;</div>';car.insertBefore(s,ctrl);}else{gl.forEach(function(g,i){var s=document.createElement('div');s.className='car-sl'+(i===0?' on':'');s.innerHTML='<img src="'+g.img+'" alt="'+g.title+'">';car.insertBefore(s,ctrl);});}_ci=0;var dots=document.getElementById('car-dots');dots.innerHTML='';var slides=car.querySelectorAll('.car-sl');slides.forEach(function(_,i){var d=document.createElement('div');d.className='car-dot'+(i===0?' on':'');d.onclick=function(){goSlide(i);};dots.appendChild(d);});}
+function moveCar(d){var slides=document.querySelectorAll('#carousel .car-sl');var dots=document.querySelectorAll('#car-dots .car-dot');if(!slides.length)return;slides[_ci].classList.remove('on');if(dots[_ci])dots[_ci].classList.remove('on');_ci=(_ci+d+slides.length)%slides.length;slides[_ci].classList.add('on');if(dots[_ci])dots[_ci].classList.add('on');}
+function goSlide(i){var slides=document.querySelectorAll('#carousel .car-sl');var dots=document.querySelectorAll('#car-dots .car-dot');if(!slides.length)return;slides[_ci].classList.remove('on');if(dots[_ci])dots[_ci].classList.remove('on');_ci=i;slides[_ci].classList.add('on');if(dots[_ci])dots[_ci].classList.add('on');}
+function prevImg(inp,pid){if(!inp.files||!inp.files[0])return;var r=new FileReader();r.onload=function(e){document.getElementById(pid).innerHTML='<img src="'+e.target.result+'" style="max-width:85px;border-radius:7px;margin-top:6px">';};r.readAsDataURL(inp.files[0]);}
+function prevFile(inp){if(!inp.files||!inp.files[0])return;document.getElementById('fmFilePrev').innerHTML='<div style="padding:8px;background:var(--gp);border-radius:7px;margin-top:6px;font-size:12px">'+inp.files[0].name+'</div>';}
+function doSearch(q){var res=document.getElementById('sres');if(!q||q.length<2){res.classList.remove('on');return;}var arts=(DB.articles||[]).filter(function(a){return a.title.toLowerCase().includes(q.toLowerCase());});res.innerHTML=arts.slice(0,5).map(function(a){return '<div class="sres-i" onclick="oArt(\''+a.id+'\',\'news\')">'+a.title+'</div>';}).join('')||'<div class="sres-i">لا توجد نتائج</div>';res.classList.add('on');}
+document.addEventListener('click',function(e){if(!e.target.closest('.sbar'))document.getElementById('sres').classList.remove('on');});
+function updateTime(){var now=new Date();tx('dtime',String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0'));tx('dgreg',now.toLocaleDateString('ar-DZ',{weekday:'short',year:'numeric',month:'long',day:'numeric'}));var hm=['محرم','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];var h2=new Date(now);h2.setDate(now.getDate()-11);tx('dhijri',h2.getDate()+' '+hm[h2.getMonth()]+' 1447هـ');}
+function updateVis(){var v=DB.visitors||{count:32841,last:''};var today=new Date().toDateString();if(v.last!==today){v.count+=Math.floor(Math.random()*30)+1;v.last=today;DB.visitors=v;dbSave('visitors');}tx('visNum',v.count.toLocaleString('ar'));}
+function renderAll(){applySettings();applyAlert();renderTicker();renderFaq();renderNews();renderServices();renderCouncil();renderForms();renderGallery();renderEvents();buildCarousel();}
+function init(){dbLoad();renderAll();updateTime();setInterval(updateTime,1000);updateVis();buildCarousel();setInterval(function(){moveCar(1);},5000);if(JBKEY&&JBBIN){pullCloud(true);setInterval(function(){pullCloud(true);},60000);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script>
 </body>
 </html>
